@@ -10,13 +10,13 @@ application.config = {
             async: false,
             data: {}
         }).done(function (data) {
-            alert(data);
+           // alert(data);
             gameConfig = jQuery.parseJSON(data);
             alert("Data: " + gameConfig.config.levels[0].words);
             //application.game.shuffleArray(gameConfig.config.levels[0].words); //fruits.slice(1, 3);
             //alert("Data: " + gameConfig.config.levels[0].words);
         }).fail(function () {
-            alert("Sorry, Game is currenty down, try after sometime.");
+            
         }).always(function () {
             //$("#snip-add-loading").fadeOut();
         });
@@ -24,6 +24,20 @@ application.config = {
 };
 
 application.game = {
+    setUpGuiStartPage: function(){
+        var datastatus=application.config.setupSartupConfig();
+        if(gameConfig!==null){
+            var levels=gameConfig["config"]["levels"];
+            $.each(levels, function(i, item) {
+                alert(item.name);
+            });
+            return true;
+        }else{
+             alert("Sorry, Game is currenty down, try after sometime.");
+             return false;
+        }
+        
+    },
     createNewGame: function (time_limit,life_limit,guide,level,words_limit) {  
         /* parameter structure
          * time_limit 0 for unlimited
@@ -89,6 +103,11 @@ application.game = {
     }
 };
 
+appilcation.gui={
+    addLevelAtStartPage: function(name){
+        var html=""
+    }
+};
 application.helper = {
     shuffleArray: function (arr) {
         for (var i = arr.length - 1; i >= 0; i--) {
@@ -101,10 +120,8 @@ application.helper = {
             arr[i] = a;
         }
     }
-}
+};
 application.event = {
-    setUpOneTimeEvent: function () {
-        application.config.setupSartupConfig();
-        application.game.createNewGame(1,1,true,1,4);
+    setUpOneTimeEventOfStartPage: function () {
     }
 };
