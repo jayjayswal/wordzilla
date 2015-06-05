@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/animations.css" />		
+        <link rel="stylesheet" href="css/jquery-ui.css" />
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css" />
+
+        <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>		
+        <script type="text/javascript">
+            $(document).bind("mobileinit", function () {
+                $.mobile.defaultPageTransition = 'pop';
+                $.mobile.transitionFallbacks.slideout = 'pop';
+            });
+        </script>
+
+        <script type="text/javascript" src="js/jquery.mobile-1.4.2.min.js"></script>	
+        <script type="text/javascript" src="js/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/timer.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#sortable").sortable();
+                $("#sortable li:last").removeClass("ui-last-child");
+                $("#sortable").disableSelection(); // Refresh list to the end of sort to have a correct display -- >
+                $("#sortable").bind("sortstop", function (event, ui) {
+                    $('#sortable').listview('refresh');
+                    $("#sortable li:last").removeClass("ui-last-child");
+                });
+            });
+        </script>
+        <style type="text/css">
+            li {
+                float: left;
+                display: inline;
+            }
+
+            #sortable {
+                cursor: -webkit-grab; 
+                cursor: -moz-grab;
+            }
+            .ui-sortable li.ui-state-default:last-child {
+                border-bottom: 0;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div data-role="page" data-theme="b" id="homePage" style=" background-image: url('css/images/background1.jpg');">
+
+            <div data-role="main" class="ui-content">
+                <div id="main-div" style="width:900px; margin-left: auto; margin-right: auto; padding: 20px;">
+                    <div class="animatedParent">
+                        <div class="animatedParent" data-sequence="1000">
+                            <div class='animated growIn slower' data-id='1' style="text-align: center;">
+                                <img src="css/images/alphabets/w.png" style="width: 50px;" />
+                                <img src="css/images/alphabets/o.png" style="width: 50px;" />
+                                <img src="css/images/alphabets/r.png" style="width: 50px;" />
+                                <img src="css/images/alphabets/d.png" style="width: 50px;" />
+                                <img src="css/images/alphabets/z.png" style="width: 50px;" />
+                                <img src="css/images/alphabets/i.png" style="width: 50px;" />
+                                <img src="css/images/alphabets/l.png" style="width: 50px;" />
+                                <img src="css/images/alphabets/l.png" style="width: 50px;" />
+                                <img src="css/images/alphabets/a.png" style="width: 50px;" />
+                            </div>
+                        </div>
+                        <br/><br/>
+
+                        <form id="game_start_form" style="padding-top: 10px; padding-left: 10px;">						
+                            <div class="ui-grid-c">
+                                <div class="ui-block-a" style="float: left;">
+                                    <div class="animated bounceInUp slower">
+                                        <image src="css/images/timers/timer3.gif" style="width: 50px;" />
+                                    </div>
+                                    <div class="animated bounceInDown slower">
+                                        <span id="time"><%= request.getParameter("timelimit") %>:00</span>
+                                    </div>
+                                </div>
+
+                                <div class="ui-block-b" style="float: left;">
+                                    <h4 class="animated bounceInLeft slower" style="margin-bottom: 0px;">Words</h4>
+                                    <div class="animated bounceInLeft slower">
+                                        10/10
+                                    </div>
+                                </div>
+
+                                <div class="ui-block-c">
+                                    <div data-role="controlgroup" style="float: left;">
+                                        <h4 class="animated bounceInUp slower" style="margin-bottom: 0px;">Score</h4>
+                                        <div class="animated bounceInDown slower">
+                                            1010
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-block-d">
+                                    <div data-role="controlgroup" style="float: left;">
+                                        <h4 class="animated bounceInUp slower" style="margin-bottom: 0px;">Lifes</h4>
+                                        <div data-role="controlgroup" data-type="horizontal" class="animated bounceInDown slower">
+                                            <image src="css/images/timers/cross1.png" style="width: 30px;" />
+                                            <image src="css/images/timers/cross1.png" style="width: 30px;" />
+                                            <image src="css/images/timers/cross1.png" style="width: 30px;" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/><br>
+
+                            <div class="ui-grid-solo">
+                                <div class="ui-block-a" style="text-align: center;">
+                                    <div class="animated lightSpeedInLeft slower">
+                                        <label id="jumbled_word">PEACOCK</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-b">
+                                <div class="ui-block-a"></div>
+
+                                <div class="ui-block-b" style="padding-top: 20px; padding-left: 10px;">		
+                                    <!--	<div class="animated lightSpeedInRight slower"> -->
+                                    <ul data-role="listview" id="sortable" data-type="horizontal"> 
+                                        <li>P</li>
+                                        <li>E</li>
+                                        <li>A</li>
+                                        <li>C</li>
+                                        <li>O</li>
+                                        <li>C</li>
+                                        <li>K</li>
+                                    </ul>
+                                    <!--	</div> -->
+                                </div>
+
+                                <div class="ui-block-c">	
+                                    <div class="animated tada slower" style="float: left;">
+                                        <image src="css/images/timers/tick1.png" style="width: 40px;" />
+                                    </div>
+                                    <div class="animated shake slower" style="float: left;">
+                                        <image src="css/images/timers/cross1.png" style="width: 30px; height: 40px;" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br/><br/>
+
+                            <div class="ui-grid-solo">							
+                                <div class="ui-block-a" style="text-align: center;">
+                                    <div class="animated bounceInRight slower">
+                                        <a href="#" id="btn-skip" class="ui-btn ui-btn-inline ui-corner-all">Skip</a>
+                                        <a href="#" id="btn-check" class="ui-btn ui-btn-inline ui-corner-all">Check</a>
+                                        <a href="ScorePage.jsp" id="btn-finish" class="ui-btn ui-btn-inline ui-corner-all" data-rel="dialog" data-transition="flip">Finish</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!--	<h4 class="animated bounceInLeft slower" style="margin-bottom: 0px;">Click on the link to see the pop effect.</h4>
+                                <div class="animated bounceInRight slower"><a href="StartPage.jsp" data-transition="pop">Pop to Page Two</a></div> -->
+                    </div>
+                </div>
+            </div> 
+        </div>		
+    </body>
+</html>
+<script src='js/css3-animate-it.js'></script>

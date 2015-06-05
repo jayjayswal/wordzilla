@@ -1,0 +1,21 @@
+#sortable li {
+    float: left;
+    display: inline;
+    text-transform: uppercase;
+}
+
+#sortable {
+    cursor: -webkit-grab; 
+    cursor: -moz-grab;
+}
+.ui-sortable li.ui-state-default:last-child {
+    border-bottom: 0;
+}
+
+.center-button{
+  margin: 0 auto;
+}
+
+#word-sortable{ 
+    background:orange;
+}
