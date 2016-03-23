@@ -67,13 +67,13 @@
                                     <image src="assets/css/images/timers/timer3.gif" style="width: 50px;" />
                                 </div>
                                 <div>
-                                    <span id="time"><%= request.getParameter("timelimit") %>:00</span>
+                                    <span id="time_div">ads</span>
                                 </div>
                             </div>
 
                             <div class="ui-block-b" style="float: left;">
                                 <h4 style="margin-bottom: 0px;">Words</h4>
-                                <div>
+                                <div id="word_div" data-role="controlgroup" data-type="horizontal">
                                     10/10
                                 </div>
                             </div>
@@ -81,18 +81,18 @@
                             <div class="ui-block-c">
                                 <div data-role="controlgroup" style="float: left;">
                                     <h4  style="margin-bottom: 0px;">Score</h4>
-                                    <div>
-                                        1010
+                                    <div id="score_div" data-role="controlgroup" data-type="horizontal" >
+                                        0
                                     </div>
                                 </div>
                             </div>
                             <div class="ui-block-d">
                                 <div data-role="controlgroup" style="float: left;">
                                     <h4 style="margin-bottom: 0px;">Lifes</h4>
-                                    <div data-role="controlgroup" data-type="horizontal">
+                                    <div data-role="controlgroup" id="lifes_div" data-type="horizontal">
+                                        <!--<image src="assets/css/images/timers/cross1.png" style="width: 30px;" />
                                         <image src="assets/css/images/timers/cross1.png" style="width: 30px;" />
-                                        <image src="assets/css/images/timers/cross1.png" style="width: 30px;" />
-                                        <image src="assets/css/images/timers/cross1.png" style="width: 30px;" />
+                                        <image src="assets/css/images/timers/cross1.png" style="width: 30px;" />-->
                                     </div>
                                 </div>
                             </div>
@@ -101,17 +101,10 @@
 
 
                         <div class="ui-grid-solo">
-                            <div  id="word-sortable">		
+                            <div class="ui-block-a" id="word-sortable" style="padding-top: 20px; padding-left: 10px;">		
                                 <ul data-role="listview" id="sortable" data-type="horizontal"> 
-                                    <li>P</li>
-                                    <li>E</li>
-                                    <li>A</li>
-                                    <li>C</li>
-                                    <li>O</li>
-                                    <li>C</li>
-                                    <li>K</li>
                                 </ul>	
-                                <div id="word_result" style="float: left;">
+                                <div id="word_result" style="float: left;margin-left: 30px;">
 
                                 </div>
                             </div>
@@ -124,7 +117,11 @@
                                 <div>
                                     <a id="btn-skip" class="ui-btn ui-btn-inline ui-corner-all">Skip</a>
                                     <a id="btn-check" class="ui-btn ui-btn-inline ui-corner-all">Check</a>
-                                    <a href="ScorePage.jsp" id="btn-finish" class="ui-btn ui-btn-inline ui-corner-all" data-rel="dialog" data-transition="flip">Finish</a>
+                                    <a id="btn-finish" class="ui-btn ui-btn-inline ui-corner-all">Finish</a>
+                                    <div data-role="popup" id="popupFinish">
+                                        <h1  id="score-dispaly">Your Score is : 50</h1>
+                                        <div align="center"><a id="btn-restart" class="ui-btn ui-btn-inline ui-corner-all">Restart the Game</a></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -133,7 +130,8 @@
                     </div>
                 </div>
             </div> 
+            
             <script src='assets/js/css3-animate-it.js'></script>
-        </div>		
+        </div>	
     </body>
 </html>

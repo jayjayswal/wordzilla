@@ -12,10 +12,7 @@
     border-bottom: 0;
 }
 
-.center-button{
-  margin: 0 auto;
-}
-
-#word-sortable{ 
-    background:orange;
+         
+.guide-color{
+    background-color: darkgreen;
 }

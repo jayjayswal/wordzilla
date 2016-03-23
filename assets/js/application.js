@@ -1,7 +1,10 @@
 var currentGame = null;
 var gameConfig = null;
 var application = {};
-
+var scoreunit = 10;
+var livesunit = 3;
+TotalSeconds = 0;
+var gamefinished=false;
 application.config = {
     setupSartupConfig: function () {
         $.ajax({
@@ -60,6 +63,11 @@ application.game = {
 
     },
     createNewGame: function (time_limit, life_limit, guide, level, words_limit) {
+        if (life_limit === "off") {
+            life_limit = 0;
+        } else {
+            life_limit = livesunit;
+        }
         /* parameter structure
          * time_limit 0 for unlimited
          * life_limit 0 for unlimited
@@ -86,6 +94,7 @@ application.game = {
             "word_limit": words_limit,
             "level": level,
             "current_word_index": 0,
+            "score": 0,
             "words": application.game.createWordsArray(selected_words)
         };
         // alert(JSON.stringify(currentGame["words"][0]["last_status"]));
@@ -93,6 +102,15 @@ application.game = {
     },
     startGame: function () {
         application.gui.setupNewWord(currentGame["words"][0]["last_status"]);
+        if (currentGame["life"]["life_limit"] === 0) {
+            $("#lifes_div").html("unlimited");
+        }
+        if (currentGame["time_limit"] !== "0") {
+            TotalSeconds = currentGame["time_limit"] * 60;
+            application.helper.createTimer();
+        } else {
+            $("#time_div").html("No Limit");
+        }
     },
     checkCurrentWord: function () {
         var arr = $("#sortable li").map(function () {
@@ -101,30 +119,69 @@ application.game = {
         var curr_word = currentGame["words"][currentGame["current_word_index"]]["word"];
         if (application.helper.comapreArray(curr_word, arr)) {
             currentGame["words"][currentGame["current_word_index"]]["status"] = 2;
+            application.game.updateScore();
+            $("#sortable").sortable("destroy");
+            $("#btn-check").addClass("ui-disabled");
+            $("#btn-skip").html("Next");
             $("#word_result").html('<image src="assets/css/images/timers/tick1.png" style="width: 40px;" />');
         } else {
             currentGame["words"][currentGame["current_word_index"]]["status"] = 1;
             $("#word_result").html('<image src="assets/css/images/timers/cross1.png" style="width: 30px; height: 40px;" />');
-            //alert(":P nooooo");
+            application.game.updateLifes();
         }
-
-
     },
     skipCurrentWord: function () {
 
     },
     finishGame: function () {
-
+        //alert("sd");
+        $("#score-dispaly").html("Your Score Is: " +currentGame["score"]  );
+        $("#popupFinish").popup({
+            dismissible: false,history: false
+        });
+        $("#popupFinish").popup( "open" );
     },
     updateGuide: function () {
-
+        var arr = $("#sortable li").map(function () {
+            return $(this).text();
+        }).get();
+        var curr_word = currentGame["words"][currentGame["current_word_index"]]["word"];
+        var i = arr.length;
+        i--;
+        var check = true;
+        while (i >= 0) {
+            if (arr[i] !== curr_word[i]) {
+                $("#sortable li:nth-child(" + (i + 1) + ")").css("background-color", "#2a2a2a");
+                $("#sortable li:nth-child(" + (i + 1) + ")").css("border-color", "#454545");
+                check = false;
+            }
+            else {
+                $("#sortable li:nth-child(" + (i + 1) + ")").css("background-color", "darkgreen");
+                $("#sortable li:nth-child(" + (i + 1) + ")").css("border-color", "darkgreen");
+            }
+            i--;
+        }
+        if (check) {
+            application.game.checkCurrentWord();
+        }
     },
-    updateLife: function () {
-
+    updateScore: function () {
+        currentGame["score"] += scoreunit;
+        $("#score_div").html(currentGame["score"] + " / " + (scoreunit * currentGame["word_limit"]));
+    },
+    updateLifes: function () {
+        if (currentGame["life"]["life_limit"] !== 0) {
+            if (currentGame["life"]["life_remains"] > 0) {
+                currentGame["life"]["life_remains"] = currentGame["life"]["life_remains"] - 1;
+                $("#lifes_div").append('<image src="assets/css/images/timers/cross1.png" style="width: 30px;" />');
+            } else {
+                application.game.finishGame();
+            }
+        }
     },
     setNextWord: function () {
         if (currentGame["current_word_index"] >= (currentGame["word_limit"] - 1)) {
-            alert("game over");
+            application.game.finishGame();
         }
         else {
             var arr = $("#sortable li").map(function () {
@@ -194,6 +251,7 @@ application.gui = {
         $("#noofword").selectmenu('refresh');
     },
     setupNewWord: function (word) {
+        $("#word_div").html((currentGame['current_word_index'] + 1) + " / " + currentGame['word_limit']);
         var htm = "";
         $.each(word, function (i, item) {
             var char = item;
@@ -204,6 +262,11 @@ application.gui = {
         $("#sortable").sortable();
         $('#sortable').listview('refresh');
         $("#sortable li:last").removeClass("ui-last-child");
+        if (currentGame["guide"] !== "off") {
+            application.game.updateGuide();
+        }
+        $("#btn-check").removeClass("ui-disabled");
+        $("#btn-skip").html("Skip");
         application.gui.setWordSortableCenter();
     },
     setWordSortableCenter: function () {
@@ -212,11 +275,12 @@ application.gui = {
         $("li").each(function () {
             ulWidth = ulWidth + $(this).width()
         });
-        alert(ulWidth);
-        alert($("#word-sortable").width());
-        var leftpos = (($("#word-sortable").width()) - (ulWidth))/2;
-        alert(leftpos);
-        $("#sortable").css("right", leftpos + "px");
+        //alert("ul "+ulWidth);
+        //alert("window "+$( window ).width());
+        //alert("word shorable "+$("#word-sortable").width());
+        var leftpos = (($("#word-sortable").width() - 200) - (ulWidth + 35)) / 2;
+        // alert(leftpos);
+        $("#sortable:first-child").css("margin-left", leftpos + "px");
     }
 };
 application.helper = {
@@ -240,6 +304,37 @@ application.helper = {
                 return false;
         }
         return true;
+    },
+    createTimer: function (TimerID, Time) {
+        application.helper.updateTimer()
+        window.setTimeout("application.helper.tick()", 1000);
+    },
+    tick: function () {
+        //alert(TotalSeconds);
+        if (TotalSeconds <= 0) {
+            application.game.finishGame();
+            return;
+        }
+        if(gamefinished){
+            return;
+        }
+        TotalSeconds -= 1;
+        application.helper.updateTimer();
+        window.setTimeout("application.helper.tick()", 1000);
+    },
+    updateTimer: function () {
+        var Seconds = TotalSeconds;
+        var Days = Math.floor(Seconds / 86400);
+        Seconds -= Days * 86400;
+        var Hours = Math.floor(Seconds / 3600);
+        Seconds -= Hours * (3600);
+        var Minutes = Math.floor(Seconds / 60);
+        Seconds -= Minutes * (60);
+        var TimeStr = ((Days > 0) ? Days + " days " : "") + application.helper.leadingZero(Hours) + ":" + application.helper.leadingZero(Minutes) + ":" + application.helper.leadingZero(Seconds);
+        $("#time_div").html(TimeStr);
+    },
+    leadingZero: function (Time) {
+        return (Time < 10) ? "0" + Time : +Time;
     }
 };
 application.event = {
@@ -266,14 +361,24 @@ application.event = {
         $(document).on("click", "#btn-check", function () {
             application.game.checkCurrentWord();
         });
+        $(document).on("click", "#btn-restart", function () {
+            window.location.reload();        
+        });
+        $(document).on("click", "#btn-finish", function () {
+            application.game.finishGame();
+        });
         $(document).on("pageshow", "#homePage", function (event, data) {
             $("#sortable").sortable();
             $("#sortable li:last").removeClass("ui-last-child");
             $("#sortable").disableSelection(); // Refresh list to the end of sort to have a correct display -- >
+
             $("#sortable").bind("sortstop", function (event, ui) {
                 $('#sortable').listview('refresh');
                 $("#sortable li:last").removeClass("ui-last-child");
                 $("#word_result").empty();
+                if (currentGame["guide"] !== "off") {
+                    application.game.updateGuide();
+                }
             });
             application.game.startGame();
         });
